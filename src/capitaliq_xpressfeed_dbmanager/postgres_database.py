@@ -10,13 +10,16 @@ logger = get_logger(__name__)
 class PostgresDatabase(BaseDatabase):
     """Postgres database class providing PostgresQL connection handling."""
 
-    def __init__(self, dbname: str, user: str, password:str, host: str="localhost", port: int=5432):
+    def __init__(self, dbname: str, user: str, password:str="", host: str="localhost", port: int=5432):
         """Initialize database with configuration.
 
         Args:
             config: Database configuration containing connection details
         """
-        self.config = dict(dbname=dbname, user=user, password=password, host=host, port=port)
+        if host == "localhost":
+            self.config = dict(dbname=dbname, user=user)
+        else:
+            self.config = dict(dbname=dbname, user=user, password=password, host=host, port=port)
 
         try:
             # Test connection
@@ -40,12 +43,11 @@ class PostgresDatabase(BaseDatabase):
         finally:
             conn.close()
 
-    def query_all(self, query: str, params: Tuple = ()) -> List[Tuple]:
+    def query_all(self, query: str) -> List[Tuple]:
         """Execute a query and return all results.
 
         Args:
             query: SQL query to execute
-            params: Query parameters
 
         Returns:
             list[tuple]: List of query results
@@ -53,7 +55,7 @@ class PostgresDatabase(BaseDatabase):
         with self.get_connection() as conn:
             cur = conn.cursor()
             logger.info(f"Executing query: {query}")
-            cur.execute(query, params)
+            cur.execute(query)
             result = cur.fetchall()
             logger.info(f"Query executed successfully! Total rows: {len(result)}")
             column_names = [desc[0] for desc in cur.description]
