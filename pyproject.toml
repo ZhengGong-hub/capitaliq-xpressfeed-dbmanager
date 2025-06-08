@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "capitaliq-xpressfeed-dbmanager"
+version = "0.1.0"
+description = "A helper for accessing CapitalIQ data from XpressFeed channel"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+    { name = "ZhengGong", email = "zheng.gong94@gmail.com" }
+]
+dependencies = [
+    "psycopg2-binary>=2.9.0",
+    "sqlalchemy>=1.4.0",
+    "python-dotenv>=1.0.0,<2.0.0",
+]
+
+[project.urls]
+Repository = "https://github.com/ZhengGong-hub/capitaliq-xpressfeed-dbmanager"
+Documentation = "https://github.com/ZhengGong-hub/capitaliq-xpressfeed-dbmanager#readme"
+Issues = "https://github.com/ZhengGong-hub/capitaliq-xpressfeed-dbmanager/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["capitaliq_xpressfeed_dbmanager"]
