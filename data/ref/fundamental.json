@@ -1,0 +1,76 @@
+{
+    "is": [
+        {
+            "dataitemid": 28,
+            "dataitemname": "Total Revenue"
+        },
+        {
+            "dataitemid": 10,
+            "dataitemname": "Gross Profit"
+        },
+        {
+            "dataitemid": 21,
+            "dataitemname": "Operating Income"
+        },
+        {
+            "dataitemid": 4051,
+            "dataitemname": "EBITDA"
+        },
+        {
+            "dataitemid": 15,
+            "dataitemname": "Net Income"
+        }
+    ],
+    "bs": [
+        {
+            "dataitemid": 1293,
+            "dataitemname": "Total Assets"
+        },
+        {
+            "dataitemid": 4364,
+            "dataitemname": "Net Debt"
+        },
+        {
+            "dataitemid": 4173,
+            "dataitemname": "Total Debt"
+        },
+        {
+            "dataitemid": 1002,
+            "dataitemname": "Total Cash and Short-Term Investments"
+        }
+    ],
+    "eps": [
+        {
+            "dataitemid": 9,
+            "dataitemname": "Net EPS - Basic"
+        },
+        {
+            "dataitemid": 8,
+            "dataitemname": "Net EPS - Diluted"
+        }
+    ],
+    "margins": [
+        {
+            "dataitemid": 4074,
+            "dataitemname": "Gross Profit Margin"
+        },
+        {
+            "dataitemid": 4053,
+            "dataitemname": "EBIT Margin"
+        },
+        {
+            "dataitemid": 4047,
+            "dataitemname": "EBITDA Margin"
+        },
+        {
+            "dataitemid": 4094,
+            "dataitemname": "Net Income Margin"
+        }
+    ],
+    "other": [
+        {
+            "dataitemid": 4371,
+            "dataitemname": "Total Employees"
+        }
+    ]
+}

@@ -252,10 +252,55 @@ class TaskManagerRepository:
 
         return self.database.query_all(sql)
 
-    def get_key_fundamentals(self, companyids: list[int], traling_x_years: int = 5) -> pd.DataFrame:
+    def get_historical_fundamental(self, ls_ids, ls_dataitemid, periodtypeid = [1, 2], startyear = 2007):
+
+        """
+        @author: zheng
+        """    
+        startdate = pd.to_datetime(f"{startyear}-01-01").strftime("%Y-%m-%d")
+
+        sql = f"""
+                SELECT 
+                fp.companyId, 
+                fi.periodEndDate,
+                fi.filingDate,
+                fi.formtype,
+                fi.currencyid,
+                fp.periodTypeId, 
+                fp.calendarQuarter, 
+                fp.calendarYear,
+                fd.dataItemId,
+                fd.dataItemValue,
+                fid.instanceDate,
+                di.dataitemname
+                
+                FROM ciqFinPeriod fp 
+                join ciqFinInstance fi on fi.financialPeriodId = fp.financialPeriodId 
+                join ciqFinInstanceDate fid on fid.financialInstanceId = fi.financialInstanceId
+                join ciqFinInstanceToCollection ic on ic.financialInstanceId = fi.financialInstanceId 
+                join ciqFinCollectionData fd on fd.financialCollectionId = ic.financialCollectionId 
+                join ciqdataitem di on di.dataitemid = fd.dataItemId
+                
+                WHERE fd.dataItemId in ({', '.join([str(id) for id in ls_dataitemid])})  
+                AND    fp.companyId in ({', '.join([str(id) for id in ls_ids])})
+                AND    fp.calendarYear >= '{startyear}'
+                AND    fp.periodTypeId in ({', '.join([str(id) for id in periodtypeid])}) --quarterly 
+                AND  fi.periodEndDate >= '{startdate}'
+                
+            """
+        
+        df = self.database.query_all(sql)   
+
+        # round the dataitemvalue to 2 decimal places
+        df['dataitemvalue'] = df['dataitemvalue'].astype(float).round(2)
+        return df
+
+    def get_key_fundamentals(self, companyids: list[int], dataitemids: list[int], traling_x_years: int = 5) -> pd.DataFrame:
         # today - trailing x years
         startdate = (pd.Timestamp.now() - pd.Timedelta(days=365 * traling_x_years)).strftime("%Y-%m-%d")
-        _df = self.get_act_q_ref_co(companyids, [100186, 100284, 100179], startdate)
+        if dataitemids is None:
+            dataitemids = [100186, 100284, 100179]
+        _df = self.get_act_q_ref_co(companyids, dataitemids, startdate)
 
         # pivot so that the periodenddate is the index
         _df = _df.pivot(index='periodenddate', columns='dataitemid', values='dataitemvalue').reset_index()
@@ -330,3 +375,21 @@ class TaskManagerRepository:
         """
         _df = self.get_past_price(companyid, traling_x_years)
         return _df[['pricedate', 'priceclose']].sort_values(by='pricedate', ascending=True)
+
+    def get_dataitem_info(self, dataitemids: list[int] = None, all: bool = False) -> pd.DataFrame:
+        """
+        Get dataitem info for a given dataitemid
+        Args:
+            dataitemids (list): list of dataitemid e.g. [100186, ]
+        Returns:
+            pd.DataFrame: Dataitem info
+        """
+        if all:
+            sql = f"""
+            select * from ciqdataitem
+            """
+        else:
+            sql = f"""
+            select * from ciqdataitem where dataitemid in ({', '.join([str(id) for id in dataitemids])})
+            """
+        return self.database.query_all(sql)

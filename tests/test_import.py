@@ -44,3 +44,11 @@ def test_get_past_price(task_manager):
     assert not result.empty
     assert 'pricedate' in result.columns
     assert 'priceclose' in result.columns
+
+def test_get_historical_fundamental(task_manager):
+    """Test getting historical fundamental data"""
+    result = task_manager.get_historical_fundamental(ls_ids=[24937, ], ls_dataitemid=[8,9], startyear=2020, periodtypeid=[1])
+    assert result is not None
+    assert not result.empty
+    assert 'dataitemname' in result.columns
+    assert 'dataitemvalue' in result.columns
