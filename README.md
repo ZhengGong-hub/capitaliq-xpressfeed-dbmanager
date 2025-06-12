@@ -94,3 +94,7 @@ how to use?
     # Initialize dependencies
     database = PostgresDatabase(**config.database.db_config)
     task_manager = TaskManagerRepository(database)
+
+
+### connect in CML by psql
+psql -h 101.46.32.216 -U qian -d targetdb -p 5432

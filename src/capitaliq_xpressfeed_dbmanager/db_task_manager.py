@@ -125,18 +125,26 @@ class TaskManagerRepository:
         Returns:
             pd.DataFrame: Security information
         """
+        if country == "all":
+            country_filter = ""
+        else:
+            country_filter = f"and cg.isocountry2 = '{country}'"
         sql = f"""
-        select t.*, s.*, c.*, upper(cg.isocountry2) as countrycode
+        select t.*, s.*, c.*, upper(cg.isocountry2) as countrycode, tis.tradingitemstatusname
         from ciqtradingitem t
         join ciqsecurity s on t.securityid = s.securityid
         join ciqcompany c on s.companyid = c.companyid
         join ciqcountrygeo cg on c.countryid = cg.countryid
+        join ciqtradingitemstatus tis on t.tradingitemstatusid = tis.tradingitemstatusid
         where t.tickersymbol = '{ticker}'
-        and cg.isocountry2 = '{country}'
+        {country_filter}
         and
         t.primaryflag = 1
         and
         s.primaryflag = 1
+        and 
+        -- 4: delisted, 5: expired; 11: inactive
+        t.tradingitemstatusid != 4 and t.tradingitemstatusid != 5 and t.tradingitemstatusid != 11
         """
         return self.database.query_all(sql)
 
