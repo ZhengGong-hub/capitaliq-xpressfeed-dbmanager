@@ -158,8 +158,7 @@ class TaskManagerRepository:
             int: Company id
         """
         _df = self.get_security_info(ticker, country)
-        print(_df)
-        assert False
+
         if len(_df) > 1 or len(_df) == 0:
             raise Exception(f"Multiple or no security found for {ticker}")
         else:
