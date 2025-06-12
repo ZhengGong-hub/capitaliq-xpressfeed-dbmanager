@@ -130,7 +130,7 @@ class TaskManagerRepository:
         else:
             country_filter = f"and cg.isocountry2 = '{country}'"
         sql = f"""
-        select t.*, s.*, c.*, upper(cg.isocountry2) as countrycode, tis.tradingitemstatusname
+        select t.*, s.*, c.*, upper(cg.isocountry2) as countrycode, tis.*
         from ciqtradingitem t
         join ciqsecurity s on t.securityid = s.securityid
         join ciqcompany c on s.companyid = c.companyid
@@ -143,8 +143,8 @@ class TaskManagerRepository:
         and
         s.primaryflag = 1
         and 
-        -- 4: delisted, 5: expired; 11: inactive
-        t.tradingitemstatusid != 4 and t.tradingitemstatusid != 5 and t.tradingitemstatusid != 11
+        -- 4: delisted, 5: expired; 11: inactive; 8: merged
+        t.tradingitemstatusid not in (4, 5, 8, 11)
         """
         return self.database.query_all(sql)
 
@@ -158,6 +158,8 @@ class TaskManagerRepository:
             int: Company id
         """
         _df = self.get_security_info(ticker, country)
+        print(_df)
+        assert False
         if len(_df) > 1 or len(_df) == 0:
             raise Exception(f"Multiple or no security found for {ticker}")
         else:

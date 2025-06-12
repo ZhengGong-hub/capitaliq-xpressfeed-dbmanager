@@ -45,7 +45,8 @@ def test_fundamental_data(task_manager):
     print(df_yearly_pivot)
 
 def test_metadata_info(task_manager):
-    task_manager.get_metadata_info(ticker="BEPC", country="all")
+    df = task_manager.get_metadata_info(ticker="BN", country="CA")
+    print(df)
 
 if __name__ == "__main__":
     db = PostgresDatabase(**db_config())
